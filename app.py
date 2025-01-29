@@ -12,10 +12,18 @@ students_marks = [{"name":"lZlSv","marks":22},{"name":"fUxKu","marks":80},{"name
 def get_marks():
     # Get the names from the query parameters
     names = request.args.getlist('name')
-    marks = [students_marks.get(name, 'Student not found') for name in names]
+    
+    # Retrieve the marks for each name
+    marks = []
+    for name in names:
+        student = next((student for student in students_marks if student['name'] == name), None)
+        if student:
+            marks.append(student['marks'])
+        else:
+            marks.append('Student not found')
     
     # Return the marks in a JSON response
-    return json.dumps({'marks': marks})
+    return jsonify({'marks': marks})
 
 if __name__ == '__main__':
     app.run(debug=True)
