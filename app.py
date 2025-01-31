@@ -108,25 +108,17 @@ students_marks = [
     {"name": "q", "marks": 98},
     {"name": "6ei0CBZ", "marks": 24}
 ]
-
 @app.route('/api', methods=['GET'])
 def get_marks():
-    # Get the names from the query parameters
-    names = request.args.getlist('name')
-    
-    # Retrieve the marks for each name
+    names = request.args.getlist('name')  # Get the list of 'name' parameters
     marks = []
-    for name in names:
-        student = next((student for student in students_marks if student['name'] == name), None)
-        if student:
-            marks.append(student['marks'])
-        else:
-            marks.append('Student not found')
     
-    # Return the marks in a JSON response
-    return jsonify({'marks': marks})
+    for name in names:
+        student = next((s for s in students_marks if s["name"] == name), None)
+        marks.append(student["marks"] if student else None)
+    
+    return jsonify({"marks": marks})
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
